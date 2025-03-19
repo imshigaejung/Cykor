@@ -56,10 +56,10 @@ void push(int push_list[], int len, char type) {
     static int func = 1;
         
 
-	//stack overflow 방지
-	if (SP-1 >= STACK_SIZE) {
-		return;
-	}
+    //stack overflow 방지
+    if (SP-1 >= STACK_SIZE) {
+	return;
+    }
 
     //매개 변수, 지역 변수 구분해서 call_stack과 stack_info 설정
 
@@ -169,9 +169,9 @@ void print_stack()
         printf("======Stack is empty.======\n");
         return;
     }
-	else if (SP-1 >= STACK_SIZE) {
-		printf("======Stack Overflow!!!======\n");
-		return;
+    else if (SP-1 >= STACK_SIZE) {
+	printf("======Stack Overflow!!!======\n");
+	return;
 	}
 
     printf("====== Current Call Stack ======\n");

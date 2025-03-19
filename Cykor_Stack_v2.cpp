@@ -55,8 +55,14 @@ void push(int push_list[], int len, char type) {
     static int local = 1;
     static int func = 1;
         
+
+	//stack overflow 방지
+	if (SP-1 >= STACK_SIZE) {
+		return;
+	}
+
     //매개 변수, 지역 변수 구분해서 call_stack과 stack_info 설정
-   
+
     if (type == 'p') {
         for (int i = len; i > 0; i--) {
             //매개변수에 값을 할당하면서 SP값을 올림
@@ -99,34 +105,38 @@ void push(int push_list[], int len, char type) {
 
 void pop(int len, char type) {
 
-
-    if (type == 'p') {
+    if (type == 'l') {
         while (SP != FP) {
-            //매개변수에 값을 할당하면서 SP값을 올림
+            //지역변수에 값을 할당하면서 SP값을 내림
             call_stack[SP] = 0;
+            strcpy_s(stack_info[SP], "");
             SP--;
         }
     }
-    else if (type == 's') {
+    else if (type == 'f') {
         FP = call_stack[SP];
         call_stack[SP] = 0;
+        strcpy_s(stack_info[SP], "");
         SP--;
     }
-    else if (type == 'f') {
+    else if (type == 's') {
         call_stack[SP] = 0;
+        strcpy_s(stack_info[SP], "");
         SP--;
     }
-    else if (type == 'l') {
+    else if (type == 'p') {
 
         for (int i = len; i > 0; i--) {
-            //매개변수에 값을 할당하면서 SP값을 올림
+            //매개변수에 값을 할당하면서 SP값을 내림
             call_stack[SP] = 0;
+            strcpy_s(stack_info[SP], "");
             SP--;
         }
 
     }
 
 }
+
 void prologue(int param_list[], int local_list[], int par_len, int loc_len) {
     //push 함수에 형식에 맞춰 집어넣기 위해 딱히 리스트를 제공받지 않는 sfp와 반환 주소를 위한 공백 리스트
     int NULL_list[1] = {};
@@ -142,23 +152,27 @@ void prologue(int param_list[], int local_list[], int par_len, int loc_len) {
 
 void epilogue(int par_len) {
    
-    //매개 변수 push
-    pop(0,'p');
-    //반환 주소 push
-    pop(0,'s');
-    //SFP push
+    //지역 변수 pop
+    pop(0,'l');
+    //SFP pop
     pop(0,'f');
-    //지역 변수 push
-    pop(par_len, 'l');
+    //반환 주소 pop
+    pop(0,'s');
+    //매개 변수 pop
+    pop(par_len, 'p');
 }
 
 void print_stack()
 {
     if (SP == -1)
     {
-        printf("Stack is empty.\n");
+        printf("======Stack is empty.======\n");
         return;
     }
+	else if (SP-1 >= STACK_SIZE) {
+		printf("======Stack Overflow!!!======\n");
+		return;
+	}
 
     printf("====== Current Call Stack ======\n");
     
